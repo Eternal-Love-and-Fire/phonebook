@@ -1,52 +1,79 @@
-import { useState } from 'react'
+/* eslint-disable react/prop-types */
+import { useState } from 'react';
 
-const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
-  ]) 
-  const [newName, setNewName] = useState('')
+const PersonForm = ({ addPerson, checkName }) => {
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    
-    const name = event.target.name.value;
 
-    if(checkName(name)){
-        alert(name + 'is already added to phonebook')
-        return;
+    if (checkName(name)) {
+      alert(`${name} is already added to the phonebook`);
+      return;
     }
 
-    setPersons([...persons, {name}])
-    
-    setNewName()
-  }
-  const checkName = (newName) => {
-    console.log(persons.find((person) => person.name === newName))
-    return persons.find((person) => person.name === newName);
+    addPerson({ name, phone });
+    setName('');
+    setPhone('');
+  };
 
-  }
-  console.log(persons)
+  return (
+    <form onSubmit={handleSubmit}>
+      <label htmlFor='name'>
+        Name: 
+        <input
+          type='text'
+          id='name'
+          placeholder='Enter name'
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </label>
+      <label htmlFor='phone'>
+        Phone:
+        <input
+          type='tel'
+          id='phone'
+          placeholder='Enter phone'
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+      </label>
+      <div>
+        <button type='submit'>Add</button>
+      </div>
+    </form>
+  );
+};
+
+const App = () => {
+  const [persons, setPersons] = useState([
+    { name: 'Arto Hellas', phone: '12312312312' },
+  ]);
+
+  const addPerson = (newPerson) => {
+    setPersons([...persons, newPerson]);
+  };
+
+  const checkName = (newName) => {
+    return persons.some((person) => person.name === newName);
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          name: <input name='name'/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonForm addPerson={addPerson} checkName={checkName} />
       <h2>Numbers</h2>
       <ul>
-        {
-            persons.map((person) => {
-                return <li key={person.name}>{person.name}</li>
-            })
-        }
+        {persons.map((person) => (
+          <li key={person.name}>
+            <p>Name: {person.name} Phone: {person.phone}</p>
+          </li>
+        ))}
       </ul>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
