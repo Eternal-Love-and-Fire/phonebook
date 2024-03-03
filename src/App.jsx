@@ -11,9 +11,19 @@ const App = () => {
     
     const name = event.target.name.value;
 
+    if(checkName(name)){
+        alert(name + 'is already added to phonebook')
+        return;
+    }
+
     setPersons([...persons, {name}])
     
     setNewName()
+  }
+  const checkName = (newName) => {
+    console.log(persons.find((person) => person.name === newName))
+    return persons.find((person) => person.name === newName);
+
   }
   console.log(persons)
   return (
