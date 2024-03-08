@@ -24,7 +24,7 @@ const App = () => {
 
     const personName = target.name.value;
     const personPhone = target.phone.value;
-
+    
     if (checkName(personName)) {
       alert(personName + " already added to phonebook");
       return;
