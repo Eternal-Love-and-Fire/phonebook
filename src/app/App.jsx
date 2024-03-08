@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Filter, Form, PersonsList } from "../components";
 import { create, getAll } from "../services";
-import { deleteById } from "../services/notes";
+import { deleteById, update } from "../services/notes";
 
 const App = () => {
   const [persons, setPersons] = useState();
@@ -29,20 +29,36 @@ const App = () => {
   const submitPerson = (event) => {
     event.preventDefault();
 
-    const personName = event.target.name.value;
-    const personPhone = event.target.phone.value;
+    const name = event.target.name.value;
+    const number = event.target.phone.value;
 
-    if (persons.some((person) => person.name === personName)) {
-      alert(personName + " already added to phonebook");
-      return;
+    const personData = persons.find((person) => person.name === name);
+    personData.number = number;
+    if (personData) {
+      editPerson(personData);
+    } else {
+      console.log("asdasd")
+      const person = { name, number, id: `${+persons[persons.length - 1].id + 1}` };
+      addPerson(person);
     }
+  };
 
-    addPerson({ name: personName, number: personPhone });
+  const editPerson = (person) => {
+    const newPersons = persons.map((item) => {
+      if(person.name === item.name) {
+        console.log("asda")
+
+        return person;
+      }
+      return item;
+    })
+
+    setPersons(newPersons);
+    setFilteredPersons(newPersons);
+    update(person.id, person);
   };
 
   const addPerson = (newPerson) => {
-    newPerson.id = +persons[persons.length - 1].id + 1;
-
     const updatedPersons = [...persons, newPerson];
 
     setPersons(updatedPersons);
@@ -54,7 +70,7 @@ const App = () => {
     setPersons(users);
     setFilteredPersons(users);
     deleteById(id);
-  }
+  };
 
   return (
     <div>
@@ -64,7 +80,10 @@ const App = () => {
           <Filter handleFilter={filterPersons} />
           <Form handleSubmit={submitPerson} />
           <h2>Numbers</h2>
-          <PersonsList filteredPersons={filteredPersons} handleDelete={handleDelete}/>
+          <PersonsList
+            filteredPersons={filteredPersons}
+            handleDelete={handleDelete}
+          />
         </>
       ) : (
         <div>Wait a little</div>
