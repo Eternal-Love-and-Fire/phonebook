@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 
-export const PersonsList = ({ filteredPersons }) => {
-  console.log(filteredPersons)
+export const PersonsList = ({ filteredPersons, handleDelete }) => {
+  console.log(filteredPersons);
   return (
     <ul>
       {filteredPersons.map((person) => (
@@ -9,6 +9,12 @@ export const PersonsList = ({ filteredPersons }) => {
           <p>
             Name: {person.name} Number: {person.number}
           </p>
+          <button
+            data-person-id={person.id}
+            onClick={() => handleDelete(person.id)}
+          >
+            Delete
+          </button>
         </li>
       ))}
     </ul>

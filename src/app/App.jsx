@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { Filter, Form, PersonsList } from "../components";
 import { create, getAll } from "../services";
+import { deleteById } from "../services/notes";
 
 const App = () => {
   const [persons, setPersons] = useState();
@@ -48,6 +49,12 @@ const App = () => {
     setFilteredPersons(updatedPersons);
     create(newPerson);
   };
+  const handleDelete = (id) => {
+    const users = persons.filter((item) => item.id !== id);
+    setPersons(users);
+    setFilteredPersons(users);
+    deleteById(id);
+  }
 
   return (
     <div>
@@ -57,7 +64,7 @@ const App = () => {
           <Filter handleFilter={filterPersons} />
           <Form handleSubmit={submitPerson} />
           <h2>Numbers</h2>
-          <PersonsList filteredPersons={filteredPersons} />
+          <PersonsList filteredPersons={filteredPersons} handleDelete={handleDelete}/>
         </>
       ) : (
         <div>Wait a little</div>
