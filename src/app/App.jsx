@@ -7,6 +7,7 @@ import { deleteById, update } from "../services/notes";
 const App = () => {
   const [persons, setPersons] = useState();
   const [filteredPersons, setFilteredPersons] = useState(persons);
+  const [successMessage, setSuccessMessage] = useState(false);
 
   useEffect(() => {
     getAll()
@@ -33,25 +34,30 @@ const App = () => {
     const number = event.target.phone.value;
 
     const personData = persons.find((person) => person.name === name);
-    personData.number = number;
+
     if (personData) {
+      personData.number = number;
       editPerson(personData);
     } else {
-      console.log("asdasd")
-      const person = { name, number, id: `${+persons[persons.length - 1].id + 1}` };
+      console.log("asdasd");
+      const person = {
+        name,
+        number,
+        id: `${+persons[persons.length - 1].id + 1}`,
+      };
       addPerson(person);
     }
   };
 
   const editPerson = (person) => {
     const newPersons = persons.map((item) => {
-      if(person.name === item.name) {
-        console.log("asda")
+      if (person.name === item.name) {
+        console.log("asda");
 
         return person;
       }
       return item;
-    })
+    });
 
     setPersons(newPersons);
     setFilteredPersons(newPersons);
@@ -64,6 +70,11 @@ const App = () => {
     setPersons(updatedPersons);
     setFilteredPersons(updatedPersons);
     create(newPerson);
+
+    setSuccessMessage(!successMessage);
+    setTimeout(() => {
+      setSuccessMessage(false);
+    }, 3000);
   };
   const handleDelete = (id) => {
     const users = persons.filter((item) => item.id !== id);
@@ -71,12 +82,25 @@ const App = () => {
     setFilteredPersons(users);
     deleteById(id);
   };
-
+  console.log(successMessage);
   return (
     <div>
       {persons ? (
         <>
           <h1>Phonebook</h1>
+          {successMessage ? (
+            <p
+              style={{
+                backgroundColor: "green",
+                color: "blue",
+                fontSize: "2rem",
+              }}
+            >
+              Added successfuly
+            </p>
+          ) : (
+            ""
+          )}
           <Filter handleFilter={filterPersons} />
           <Form handleSubmit={submitPerson} />
           <h2>Numbers</h2>
